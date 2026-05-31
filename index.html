@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marine Plan AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #0a1628;
+      --navy-light: #112240;
+      --navy-mid: #1a3a6b;
+      --accent: #4f9cf9;
+      --accent-hover: #2d7dd2;
+      --white: #ffffff;
+      --gray-light: #f0f4ff;
+      --gray-text: #8892a4;
+      --text: #ccd6f6;
+      --success-bg: rgba(67, 160, 71, 0.18);
+      --success-border: rgba(129, 199, 132, 0.55);
+      --shadow: 0 24px 80px rgba(4, 12, 24, 0.45);
+      --max-width: 1120px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(79, 156, 249, 0.18), transparent 34%),
+        linear-gradient(180deg, rgba(17, 34, 64, 0.55), rgba(10, 22, 40, 0.95)),
+        var(--navy);
+      color: var(--text);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(136, 146, 164, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(136, 146, 164, 0.08) 1px, transparent 1px);
+      background-size: 36px 36px;
+      mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.55), transparent 75%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: var(--white);
+    }
+
+    .container {
+      width: min(calc(100% - 2rem), var(--max-width));
+      margin: 0 auto;
+    }
+
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      background: rgba(10, 22, 40, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(79, 156, 249, 0.12);
+    }
+
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 76px;
+      gap: 1rem;
+    }
+
+    .logo {
+      color: var(--white);
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .menu-toggle {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border: 1px solid rgba(79, 156, 249, 0.2);
+      border-radius: 8px;
+      background: transparent;
+      color: var(--white);
+      cursor: pointer;
+    }
+
+    .menu-toggle span,
+    .menu-toggle::before,
+    .menu-toggle::after {
+      content: "";
+      display: block;
+      width: 18px;
+      height: 2px;
+      background: currentColor;
+      border-radius: 999px;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .menu-toggle span {
+      position: relative;
+    }
+
+    .menu-toggle::before {
+      transform: translateY(-6px);
+    }
+
+    .menu-toggle::after {
+      transform: translateY(6px);
+      margin-top: -2px;
+    }
+
+    .menu-toggle[aria-expanded="true"] span {
+      opacity: 0;
+    }
+
+    .menu-toggle[aria-expanded="true"]::before {
+      transform: translateY(0) rotate(45deg);
+    }
+
+    .menu-toggle[aria-expanded="true"]::after {
+      transform: translateY(0) rotate(-45deg);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links a {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .hero {
+      min-height: 90vh;
+      display: flex;
+      align-items: center;
+      padding: 8rem 0 4rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+      padding: 0.5rem 0.9rem;
+      border: 1px solid rgba(79, 156, 249, 0.18);
+      border-radius: 999px;
+      background: rgba(79, 156, 249, 0.08);
+      color: var(--gray-light);
+      font-size: 0.95rem;
+    }
+
+    h1 {
+      margin: 0 0 0.75rem;
+      color: var(--white);
+      font-size: clamp(2rem, 5vw, 4rem);
+      line-height: 1.08;
+    }
+
+    .tagline {
+      margin: 0 0 1rem;
+      color: var(--white);
+      font-size: clamp(1.1rem, 2vw, 1.5rem);
+      font-weight: 600;
+    }
+
+    .hero-copy p {
+      margin: 0 0 2rem;
+      color: var(--gray-light);
+      line-height: 1.8;
+      font-size: 1.05rem;
+      max-width: 700px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 14px 28px;
+      border: none;
+      border-radius: 8px;
+      background: var(--accent);
+      color: var(--white);
+      font-weight: 600;
+      transition: background 0.2s ease, transform 0.2s ease;
+      cursor: pointer;
+    }
+
+    .button:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .hero-panel {
+      padding: 1.75rem;
+      border: 1px solid rgba(79, 156, 249, 0.15);
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(17, 34, 64, 0.92), rgba(10, 22, 40, 0.96));
+      box-shadow: var(--shadow);
+    }
+
+    .hero-panel h2 {
+      margin: 0 0 1rem;
+      color: var(--white);
+      font-size: 1.2rem;
+    }
+
+    .hero-panel p {
+      margin: 0;
+      color: var(--gray-light);
+      line-height: 1.75;
+    }
+
+    .content-section {
+      padding: 0 0 5rem;
+    }
+
+    .section-heading {
+      margin: 0 0 1rem;
+      color: var(--white);
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      text-align: center;
+    }
+
+    .section-subtext {
+      margin: 0 auto 2.5rem;
+      max-width: 720px;
+      color: var(--gray-light);
+      line-height: 1.8;
+      text-align: center;
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .step-card {
+      padding: 2rem;
+      border: 1px solid var(--navy-mid);
+      border-radius: 14px;
+      background: rgba(17, 34, 64, 0.88);
+      box-shadow: var(--shadow);
+    }
+
+    .step-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      margin-bottom: 1rem;
+      border-radius: 50%;
+      background: var(--accent);
+      color: var(--white);
+      font-weight: 700;
+    }
+
+    .step-card h3 {
+      margin: 0 0 0.75rem;
+      color: var(--white);
+      font-size: 1.2rem;
+    }
+
+    .step-card p {
+      margin: 0;
+      color: var(--gray-light);
+      line-height: 1.8;
+    }
+
+    .callout {
+      padding: 2rem;
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      background: rgba(79, 156, 249, 0.08);
+      color: var(--gray-light);
+      line-height: 1.85;
+    }
+
+    .form-section {
+      padding-bottom: 5rem;
+    }
+
+    .form-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 2rem;
+      border: 1px solid var(--navy-mid);
+      border-radius: 16px;
+      background: rgba(17, 34, 64, 0.9);
+      box-shadow: var(--shadow);
+    }
+
+    .form-wrap h2 {
+      margin: 0 0 0.75rem;
+      color: var(--white);
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+    }
+
+    .form-wrap p {
+      margin: 0 0 1.75rem;
+      color: var(--gray-light);
+      line-height: 1.8;
+    }
+
+    form {
+      display: grid;
+      gap: 1rem;
+    }
+
+    label {
+      display: grid;
+      gap: 0.5rem;
+      color: var(--gray-light);
+      font-weight: 600;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--navy-mid);
+      border-radius: 6px;
+      background: var(--navy-light);
+      color: var(--white);
+      font: inherit;
+    }
+
+    textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    input:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(79, 156, 249, 0.16);
+    }
+
+    .submit-button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 6px;
+      background: var(--accent);
+      color: var(--white);
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .submit-button:hover {
+      background: var(--accent-hover);
+    }
+
+    .success-message {
+      display: none;
+      margin-top: 1rem;
+      padding: 1rem 1.25rem;
+      border: 1px solid var(--success-border);
+      border-radius: 10px;
+      background: var(--success-bg);
+      color: #d4f8d8;
+      line-height: 1.7;
+    }
+
+    .site-footer {
+      background: #060e1a;
+      padding: 2rem 1rem;
+      text-align: center;
+      border-top: 1px solid rgba(79, 156, 249, 0.12);
+    }
+
+    .site-footer p {
+      margin: 0.35rem 0;
+      line-height: 1.7;
+    }
+
+    .footer-meta {
+      color: var(--gray-text);
+      font-size: 0.95rem;
+    }
+
+    .footer-disclaimer {
+      color: var(--gray-text);
+      font-size: 0.88rem;
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid,
+      .steps-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: inline-flex;
+      }
+
+      .nav-links {
+        position: absolute;
+        top: 76px;
+        left: 0;
+        right: 0;
+        display: none;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0;
+        padding: 0.75rem 1rem 1rem;
+        background: rgba(10, 22, 40, 0.98);
+        border-bottom: 1px solid rgba(79, 156, 249, 0.12);
+      }
+
+      .nav-links.open {
+        display: flex;
+      }
+
+      .nav-links li {
+        width: 100%;
+      }
+
+      .nav-links a {
+        display: block;
+        width: 100%;
+        padding: 0.85rem 0;
+      }
+
+      .hero {
+        min-height: auto;
+        padding: 7.5rem 0 3rem;
+      }
+
+      .form-wrap,
+      .step-card,
+      .callout,
+      .hero-panel {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-bar">
+      <a class="logo" href="./index.html">Marine Plan AI</a>
+      <button class="menu-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span>
+      </button>
+      <ul class="nav-links">
+        <li><a href="./index.html">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="./privacy.html">Privacy</a></li>
+        <li><a href="#demo-form">Request Demo</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow">AI for marine and offshore piping workflows</div>
+          <h1>Marine Plan AI</h1>
+          <p class="tagline">Upload a vessel or marine facility plan. Get a complete piping schematic.</p>
+          <p>Specialized AI for marine and offshore environments — submit your vessel layout or marina facility plans and receive a complete marine plumbing schematic package tailored to ABYC, USCG, and international marine plumbing standards.</p>
+          <a class="button" href="#demo-form">Request a Demo →</a>
+        </div>
+        <aside class="hero-panel">
+          <h2>Designed for marine code contexts</h2>
+          <p>Supports vessel, marina, and offshore facility workflows that require code-aware routing outputs for water, sanitation, bilge, and fuel-related systems.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="content-section" id="about">
+      <div class="container">
+        <h2 class="section-heading">How It Works</h2>
+        <p class="section-subtext">The platform is structured for plan intake, internal model processing, and delivery of schematic packages without exposing direct public model access.</p>
+        <div class="steps-grid">
+          <article class="step-card">
+            <div class="step-number">1</div>
+            <h3>Upload</h3>
+            <p>Submit your vessel layout, marina facility plan, or offshore structure drawing.</p>
+          </article>
+          <article class="step-card">
+            <div class="step-number">2</div>
+            <h3>AI Processing</h3>
+            <p>Our model identifies marine-specific fixtures, through-hull fittings, gray/black water systems, and fuel plumbing, then generates a complete schematic.</p>
+          </article>
+          <article class="step-card">
+            <div class="step-number">3</div>
+            <h3>Delivery</h3>
+            <p>Receive your marine piping schematic package via email, typically within 1 business day.</p>
+          </article>
+        </div>
+        <div class="callout">
+          Built for marine environments — ABYC E-11, ABYC H-24, USCG regulations, and ISO 8846 awareness. Handles: vessel bilge and sanitation systems, gray water and black water routing, fuel system schematics, marina facility plumbing.
+        </div>
+      </div>
+    </section>
+
+    <section class="form-section">
+      <div class="container">
+        <div class="form-wrap">
+          <h2>Request a Demo</h2>
+          <p>Send over your contact details and project summary. We will review the request and follow up by email.</p>
+          <form id="demo-form" action="mailto:harrison@clothollc.com" method="post" enctype="text/plain">
+            <label for="full-name">
+              Full Name
+              <input id="full-name" name="full-name" type="text" required>
+            </label>
+            <label for="email-address">
+              Email Address
+              <input id="email-address" name="email-address" type="email" required>
+            </label>
+            <label for="company-name">
+              Company Name
+              <input id="company-name" name="company-name" type="text" required>
+            </label>
+            <label for="project-description">
+              Project Description
+              <textarea id="project-description" name="project-description" required></textarea>
+            </label>
+            <button class="submit-button" type="submit">Request Demo</button>
+          </form>
+          <div class="success-message" id="success-message">✅ Thank you! We'll review your project and follow up within 1 business day.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p class="footer-meta">© 2025 Clotho LLC d/b/a Marine Plan AI. A Clotho Holdings product. | <a href="./privacy.html">Privacy Policy</a></p>
+    <p class="footer-disclaimer">Operated by Clotho LLC, a Texas limited liability company.</p>
+  </footer>
+
+  <script>
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    const demoForm = document.getElementById('demo-form');
+    const successMessage = document.getElementById('success-message');
+
+    if (menuToggle && navLinks) {
+      menuToggle.addEventListener('click', () => {
+        const isOpen = navLinks.classList.toggle('open');
+        menuToggle.setAttribute('aria-expanded', String(isOpen));
+      });
+
+      navLinks.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => {
+          navLinks.classList.remove('open');
+          menuToggle.setAttribute('aria-expanded', 'false');
+        });
+      });
+    }
+
+    if (demoForm && successMessage) {
+      demoForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        demoForm.style.display = 'none';
+        successMessage.style.display = 'block';
+      });
+    }
+  </script>
+</body>
+</html>
